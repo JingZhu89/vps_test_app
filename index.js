@@ -2,59 +2,65 @@ const dotenv = require('dotenv');
 dotenv.config()
 const cors = require('cors');
 const express = require('express');
-const pgp = require('pg-promise')();
-const db = pgp(`postgres://${process.env.DBUSER}:${process.env.DBPASSWORD}@localhost:5432/plant_site`);
+const dbService = require('./dbService.js')
 const app = express();
 app.use(express.json());
 app.use(cors());
+app.use(express.static('build'));
 
 //read all
-app.get('/', async (req, res) => {
-  const dbResponse = await db.many('SELECT * FROM plants');
-  res.send(dbResponse);
+app.get('/api', async (req, res) => {
+  try {
+    const dbResponse = await dbService.getAllPlants()
+    res.send(dbResponse);
+  } catch(err) {
+    res.send('Opps ' + err.message)
+  }
 })
 
 //read one
-app.get('/:id', async (req, res) => {
-  const dbResponse = await db.one('SELECT * FROM plants WHERE plant_id = $1', 1);
-  res.send(dbResponse);
+app.get('/api/:id', async (req, res) => {
+  const id = req.params.id
+  try {
+    const dbResponse = await dbService.getPlant(id)
+    res.send(dbResponse);
+  } catch(err) {
+    res.send('Opps ' + err.message)
+  }
 })
 
 //create
-app.post('/', async (req, res) => {
+app.post('/api', async (req, res) => {
   const data = req.body
-  await db.none('INSERT INTO plants(plant_name, planted_date, water_frequency, last_watered_date, plant_diary)' + 
-  'VALUES(${plantName}, ${plantedDate}, ${waterFrequency}, ${lastWateredDate}, ${plantDiary})', {
-    plantName: data.plantName,
-    plantedDate: data.plantedDate,
-    waterFrequency: data.waterFrequency,
-    lastWateredDate: data.lastWateredDate,
-    plantDiary: data.plantDiary
-  })
-  res.send("done")
+  try {
+    const dbResponse = await dbService.insertPlant(data)
+    res.send(dbResponse);
+  } catch(err) {
+    res.send('Opps ' + err.message)
+  }
 })
 
 //update
-app.put('/:id', async (req, res) => {
+app.put('/api/:id', async (req, res) => {
   const data = req.body
   const id = req.params.id
-  console.log("put req data", data)
-  await db.none('UPDATE plants SET plant_name = ${plantName}, planted_date = ${plantedDate},' + 
-  'water_frequency = ${waterFrequency}, last_watered_date = ${lastWateredDate}, plant_diary = ${plantDiary} WHERE plant_id = ${plantId}', {
-    plantName: data.plantName,
-    plantedDate: data.plantedDate,
-    waterFrequency: data.waterFrequency,
-    lastWateredDate: data.lastWateredDate,
-    plantDiary: data.plantDiary,
-    plantId: id
-  })
-  res.send("updated")
+  try {
+    const dbResponse = await dbService.updatePlant(id, data)
+    res.send(dbResponse);
+  } catch(err) {
+    res.send('Opps ' + err.message)
+  }
 })
 
 //delete
-app.delete('/:id', async (req, res) => {
-  await db.none('DELETE FROM plants WHERE plant_id = $1', req.params.id)
-  res.send("deleted")
+app.delete('/api/:id', async (req, res) => {
+  const id = req.params.id
+  try {
+    const dbResponse = await dbService.deletePlant(id)
+    res.send(dbResponse);
+  } catch(err) {
+    res.send('Opps ' + err.message)
+  }
 })
 
 const PORT = 3001;
