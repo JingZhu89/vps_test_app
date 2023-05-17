@@ -1,5 +1,5 @@
 const pgp = require('pg-promise')();
-const db = pgp(`postgres://${process.env.DBUSER}:${process.env.DBPASSWORD}@localhost:5432/plant_site`);
+const db = pgp(`postgres://${process.env.PGUSER}:${process.env.PGPASSWORD}@localhost:5432/plant_site`);
 
 const getAllPlants = async () => {
   return await db.many('SELECT * FROM plants')
