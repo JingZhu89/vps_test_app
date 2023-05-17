@@ -1,54 +1,35 @@
-{\rtf1\ansi\ansicpg1252\cocoartf2636
-\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fnil\fcharset0 HelveticaNeue;\f1\fnil\fcharset0 HelveticaNeue-Bold;}
-{\colortbl;\red255\green255\blue255;\red220\green161\blue13;}
-{\*\expandedcolortbl;;\cssrgb\c89412\c68627\c3922;}
-\margl1440\margr1440\vieww19000\viewh11200\viewkind0
-\deftab560
-\pard\pardeftab560\slleading20\pardirnatural\partightenfactor0
 
-\f0\fs26 \cf0 \
-\pard\pardeftab560\slleading20\partightenfactor0
-\cf0 .env\
-PGUSER="postgres/other account\'93\
-PGPASSWORD=\'93your password for the account above\'94\
-MONGOURI="mongodb://<username>:<password>@127.0.0.1:27017/plant_site"\
-\pard\pardeftab560\slleading20\pardirnatural\partightenfactor0
-\cf0 \
-//sql side won\'92t work if table is not set up or table has no records\
-\pard\pardeftab560\slleading20\partightenfactor0
-\cf0 \
-CREATE DATABASE plant_site\
-CREATE TABLE plants (\
-    plant_id serial PRIMARY KEY,\
-    plant_name character varying(255) NOT NULL,\
-    planted_date date,\
-    water_frequency character varying(255) NOT NULL,\
-    last_watered_date date NOT NULL,\
-    plant_diary character varying(255),\
-    CONSTRAINT frequency_type CHECK (((water_frequency)::text = ANY ((ARRAY['daily'::character varying, 'weekly'::character varying, 'bi-weekly'::character varying, 'monthly'::character varying])::text[])))\
-);\
-\
-INSERT INTO plants (plant_name, planted_date, water_frequency, last_watered_date, plant_diary) VALUES ('Echeveria elegans', '2021-05-01', 'weekly', '2023-05-14', \'91also dying\'92);\
-INSERT INTO plants (plant_name, planted_date, water_frequency, last_watered_date, plant_diary) VALUES ('Hydrangea', '2020-04-13', 'daily', '2023-05-14', \'91also dying\'92);\
-INSERT INTO plants (plant_name, planted_date, water_frequency, last_watered_date, plant_diary) VALUES ('Azalea', '2020-06-13', 'bi-weekly', '2023-05-14', \'91also dying\'92);\
-INSERT INTO plants (plant_name, planted_date, water_frequency, last_watered_date, plant_diary) VALUES ('Test plant C Update', '2021-03-04', 'weekly', '2021-03-04', 'dying');\
-\pard\pardeftab560\slleading20\pardirnatural\partightenfactor0
-\cf0 \
-Set up user and password /\
-\pard\pardeftab560\slleading20\partightenfactor0
-\cf0 ALTER USER postgres yourpassword\
-\
-//mongo can work without setting up the tables but you will probably need to db plant_site, you just need to do 
-\f1\b use plant_site
-\f0\b0  in mongo terminal\
-\
-If you want to have some beginning data in the table do 
-\f1\b db.tips.insertOne(\{name:\'94a name\'94, tips:\'94some tips\'94\})  
-\f0\b0 once you are in the plant_site db\
-\
-mongo user and password set up\
-\pard\pardeftab560\slleading20\partightenfactor0
-{\field{\*\fldinst{HYPERLINK "https://medium.com/mongoaudit/how-to-enable-authentication-on-mongodb-b9e8a924efac"}}{\fldrslt \cf2 https://medium.com/mongoaudit/how-to-enable-authentication-on-mongodb-b9e8a924efac}}\
-Don\'92t do it while in the admin db. Do it when you are in plant_site db\
-Alternatively you can just remove the username password and @ and use the no authentication login \uc0\u8232 \u8232 \
-}
+-- .env
+-- PGUSER="postgres/other account“
+-- PGPASSWORD=“your password for the account above”
+-- MONGOURI="mongodb://<username>:<password>@127.0.0.1:27017/plant_site"
+
+-- //sql side won’t work if table is not set up or table has no records
+
+-- CREATE DATABASE plant_site
+-- CREATE TABLE plants (
+--     plant_id serial PRIMARY KEY,
+--     plant_name character varying(255) NOT NULL,
+--     planted_date date,
+--     water_frequency character varying(255) NOT NULL,
+--     last_watered_date date NOT NULL,
+--     plant_diary character varying(255),
+--     CONSTRAINT frequency_type CHECK (((water_frequency)::text = ANY ((ARRAY['daily'::character varying, 'weekly'::character varying, 'bi-weekly'::character varying, 'monthly'::character varying])::text[])))
+-- );
+
+-- INSERT INTO plants (plant_name, planted_date, water_frequency, last_watered_date, plant_diary) VALUES ('Echeveria elegans', '2021-05-01', 'weekly', '2023-05-14', ‘also dying’);
+-- INSERT INTO plants (plant_name, planted_date, water_frequency, last_watered_date, plant_diary) VALUES ('Hydrangea', '2020-04-13', 'daily', '2023-05-14', ‘also dying’);
+-- INSERT INTO plants (plant_name, planted_date, water_frequency, last_watered_date, plant_diary) VALUES ('Azalea', '2020-06-13', 'bi-weekly', '2023-05-14', ‘also dying’);
+-- INSERT INTO plants (plant_name, planted_date, water_frequency, last_watered_date, plant_diary) VALUES ('Test plant C Update', '2021-03-04', 'weekly', '2021-03-04', 'dying');
+
+-- Set up user and password /
+-- ALTER USER postgres yourpassword
+
+-- //mongo can work without setting up the tables but you will probably need to db plant_site, you just need to do use plant_site in mongo terminal
+
+-- If you want to have some beginning data in the table do db.tips.insertOne({name:”a name”, tips:”some tips”})  once you are in the plant_site db
+
+-- mongo user and password set up
+-- https://medium.com/mongoaudit/how-to-enable-authentication-on-mongodb-b9e8a924efac
+-- Don’t do it while in the admin db. Do it when you are in plant_site db
+-- Alternatively you can just remove the username password and @ and use the no authentication login 
